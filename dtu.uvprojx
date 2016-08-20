@@ -47,7 +47,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>dtu</OutputName>
+          <OutputName>STM32SIM800A.hex</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -137,7 +137,7 @@
           <Target>
             <UseTarget>1</UseTarget>
             <LoadApplicationAtStartup>1</LoadApplicationAtStartup>
-            <RunToMain>1</RunToMain>
+            <RunToMain>0</RunToMain>
             <RestoreBreakpoints>1</RestoreBreakpoints>
             <RestoreWatchpoints>1</RestoreWatchpoints>
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
@@ -170,12 +170,12 @@
             <UseExternalTool>0</UseExternalTool>
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
-            <Capability>0</Capability>
-            <DriverSelection>-1</DriverSelection>
+            <Capability>1</Capability>
+            <DriverSelection>4096</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>BIN\UL2CM3.DLL</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -224,7 +224,7 @@
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
-            <useUlib>0</useUlib>
+            <useUlib>1</useUlib>
             <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <RoSelD>3</RoSelD>
@@ -363,9 +363,9 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define></Define>
+              <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\config;.\lw_oopc_v1.2;.\include</IncludePath>
+              <IncludePath>.\config;.\lw_oopc_v1.2;.\include;.\subsystem\communication\GPRS;.\board</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -438,6 +438,26 @@
               <FileType>5</FileType>
               <FilePath>.\subsystem\communication\module_tcp.h</FilePath>
             </File>
+            <File>
+              <FileName>gprs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\subsystem\communication\GPRS\gprs.c</FilePath>
+            </File>
+            <File>
+              <FileName>gprs.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\subsystem\communication\GPRS\gprs.h</FilePath>
+            </File>
+            <File>
+              <FileName>gprs_uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\subsystem\communication\GPRS\gprs_uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>gprs_uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\subsystem\communication\GPRS\gprs_uart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -462,6 +482,56 @@
               <FileName>err_head.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\include\err_head.h</FilePath>
+            </File>
+            <File>
+              <FileName>debug.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\include\debug.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>board</GroupName>
+          <Files>
+            <File>
+              <FileName>chipset.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\board\chipset.h</FilePath>
+            </File>
+            <File>
+              <FileName>chipset.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\board\chipset.c</FilePath>
+            </File>
+            <File>
+              <FileName>pinmux.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\board\pinmux.c</FilePath>
+            </File>
+            <File>
+              <FileName>pinmux.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\board\pinmux.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm3210b_eval.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\board\stm3210b_eval.h</FilePath>
+            </File>
+            <File>
+              <FileName>stm3210b_eval.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\board\stm3210b_eval.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32_eval.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\board\stm32_eval.h</FilePath>
+            </File>
+            <File>
+              <FileName>times.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\board\times.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -503,13 +573,43 @@
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="EXTI" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Flash" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
       <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Framework" Cvendor="Keil" Cversion="3.5.1" condition="STM32F1xx STDPERIPH">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="GPIO" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="I2C" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
       <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="RCC" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH">
+        <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
+      <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="SPI" Cvendor="Keil" Cversion="3.5.0" condition="STM32F1xx STDPERIPH RCC">
         <package name="STM32F1xx_DFP" schemaVersion="1.2" url="http://www.keil.com/pack/" vendor="Keil" version="2.1.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>

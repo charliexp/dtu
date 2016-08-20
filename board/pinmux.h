@@ -1,17 +1,17 @@
 /**
   ******************************************************************************
-  * @file    config_hardware.c
+  * @file    pinmux.h
   * @author  sundh
   * @version V0.1.1
   * @date    2016-7-30
-  * @brief   系统外设的配置的默认值
+  * @brief   
   * 
   *        
   ******************************************************************************
   * @attention
   *
   *
-  * <h2><center>&copy;   </center></h2>
+  * <h2><center>&copy;sundh </center></h2>
   ******************************************************************************
 	---------------------------------------------------------------------------- 
 
@@ -26,27 +26,11 @@
 	---------------------------------------------------------------------------- 
 
   */
-#include "config_hardware.h"
+#ifndef __PINMUX_H_
+#define __PINMUX_H_
+#include "err_head.h"
+err_t conf_uart1_pin(void);
+err_t conf_uart3_pin(void);
 
 
-USART_InitTypeDef USART_InitStructure = {
-		9600,
-		USART_WordLength_8b,
-		USART_StopBits_1,
-		USART_Parity_No,
-		USART_Mode_Rx | USART_Mode_Tx,
-		USART_HardwareFlowControl_None,
-};
-USART_InitTypeDef Conf_GprsUsart = {
-		9600,
-		USART_WordLength_8b,
-		USART_StopBits_1,
-		USART_Parity_No,
-		USART_Mode_Rx | USART_Mode_Tx,
-		USART_HardwareFlowControl_None,
-		
-	
-};
-
-ConfGprs g_config_data ;
-
+#endif

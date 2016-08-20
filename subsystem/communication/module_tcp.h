@@ -4,14 +4,14 @@
 #include "lw_oopc.h"
 
 
-CLASS( gprs_tcp_operate) 
+CLASS(gprs_tcp_operate) 
 {
 	err_t ( *init)( void *);
 	err_t ( *destory)( void *);
 	err_t ( *connect_tcp_server)( void *, void *);
 	err_t ( *dis_connect_tcp_S)(void *, int);
 	err_t ( *send_tcp_data)( void *, int , void *, int);
-	err_t ( *input_tcp_data)( void *, void *, int);
+//	err_t ( *input_tcp_data)( void *, void *, int);
 	
 	
 	

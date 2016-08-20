@@ -95,6 +95,7 @@ extern void start_gprs_mode(void);
 extern char g_gprs_conn_ok;	  			 //判断GPRS是否链接到服务器了
 extern char ibusy  ;							 //判断是否处于发送数据忙的状态
 extern void gprs_heart(char *w,int t);   //心跳包数据
+extern int Gprs_err;
 
 
 #endif

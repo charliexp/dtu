@@ -5,7 +5,7 @@
 #include "module_tcp.h"
 
 
-CLASS( SubS_comm) 
+CLASS(SubS_comm) 
 {
 	err_t (*init)(void *);
 	err_t (*destory)(void *);
@@ -24,7 +24,7 @@ CLASS( SubS_comm)
 
 
 
-
+int Init_CMM_Thread (void);
 
 #endif
 

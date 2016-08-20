@@ -65,7 +65,7 @@ void lw_oopc_report();
 
 #else
 
-void lw_oopc_report();
+void lw_oopc_report(void);
 
 #define lw_oopc_file_line
 #define lw_oopc_file_line_params
@@ -174,7 +174,4 @@ void type##_ctor(type* cthis) {
 #define INHERIT_FROM(father, cthis, field)	cthis->father.field
 
 #endif
-
-	
-	
 	

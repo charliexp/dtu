@@ -1,6 +1,8 @@
 #include "cmsis_os.h"                                           // CMSIS RTOS header file
-#include "lw_oopc.h"
 #include "subsys_commu.h"
+#include "gprs_uart.h"
+#include "gprs.h"
+#include "stdio.h"
 /*----------------------------------------------------------------------------
  *      Thread 1 'Thread_Name': Sample thread
  *---------------------------------------------------------------------------*/
@@ -41,9 +43,14 @@ void CMM_Thread (void const *argument) {
 static err_t cmm_init(void *t)
 {
 	SubS_comm *cthis = ( SubS_comm*)t;
-	cthis->tcp_opr = gprs_tcp_operate_new();
-	if( cthis->tcp_opr == NULL)
-		return ERR_MEM_UNAVAILABLE;
+	
+	start_gprs_mode();	
+	init_gprs();
+	
+//	cthis->tcp_opr = gprs_tcp_operate_new();
+//	if( cthis->tcp_opr == NULL)
+//		return ERR_MEM_UNAVAILABLE;
+	
 			
 	if( cthis->tcp_opr->init( cthis->tcp_opr) < 0)
 		return ERR_UNKOWN;

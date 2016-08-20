@@ -12,6 +12,9 @@ typedef int err_t;
 #define ERR_UNINITIALIZED     	-4    			/* 在组件没有成功初始化的时候就使用的时候指定     */
 #define ERR_CATASTROPHIC_ERR		-5 					/* 灾难性错误			*/
 #define ERR_MEM_UNAVAILABLE			-6					/* 内存不可获取			*/
-#define ERR_RES_UNAVAILABLE			-6					/* 资源不可获取			*/
+#define ERR_RES_UNAVAILABLE			-7					/* 资源不可获取			*/
+
+
+#define MAX_ERROR_COUNT 30000
 
 #endif

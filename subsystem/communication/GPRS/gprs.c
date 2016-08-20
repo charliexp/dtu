@@ -1,19 +1,19 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include <string.h>
 #include <stdio.h>
-//#include "stm32f10x_lib.h"
-
+#include "err_head.h"
 #include "gprs.h"
-#include "stm32f10x_usart.h"
-#include "stm32f10x_tim.h"
-//#include "../lcd_nokia5110/nokia_5110.h"
-//#include "EEPROM/eeprom.h"
+#include "gprs_uart.h"
+#include "config_hardware.h"
+#include "times.h"
 
 int num_of_sms;
 #define SMS_CMD_LEN 30
 char at_readsms[SMS_CMD_LEN];
 char tpy_sms_content[SMS_CMD_LEN];
 char tpy_send_tel_num[SMS_CMD_LEN];
+int Gprs_err;
 
 unsigned char is_gprs_mode_ok = 1;                  //gprs start succeed
 unsigned char is_gprs_mode_start_succeed = 0;       //gprs connect ok
@@ -77,32 +77,23 @@ void start_gprs_mode(void)
 void __GPRS_TCPIP()
 {//AT+CMGR=1
 
-    send_string_uart3(GPRS_TCP1);
-    send_data_uart3(0x22);
-    send_string_uart3(g_config_data.protocoltype);
-    send_data_uart3(0x22);
-    send_data_uart3(',');
-    send_data_uart3(0x22);
-    send_string_uart3(g_config_data.ipaddr);
-    send_data_uart3(0x22);
-    send_data_uart3(',');
-    send_data_uart3(0x22);
-    send_string_uart3(g_config_data.portnum);
-    send_data_uart3(0x22);
-    send_data_uart3(0x0D);
-    send_data_uart3(0x0A);
+    uart_string_send(GPRS_TCP1);
+    uart_data_send(0x22);
+    uart_string_send(g_config_data.protocoltype);
+    uart_data_send(0x22);
+    uart_data_send(',');
+    uart_data_send(0x22);
+    uart_string_send(g_config_data.ipaddr);
+    uart_data_send(0x22);
+    uart_data_send(',');
+    uart_data_send(0x22);
+    uart_string_send(g_config_data.portnum);
+    uart_data_send(0x22);
+    uart_data_send(0x0D);
+    uart_data_send(0x0A);
     PUT("destination address:");
     PUT(g_config_data.ipaddr);
-    LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(g_config_data.ipaddr)*6)/2,3,LCD_BANK_LINE);
-    if(0)
-    {
-        LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(g_config_data.ipaddr)*6)/2,3,g_config_data.ipaddr);
-    }
-    else
-    {
-        LCD_write_english_string(0,3,g_config_data.ipaddr);
-        LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(PM)*6)/2,1,PM);
-    }
+  
     delay_GSM(3000);
 }
 
@@ -113,7 +104,7 @@ static void S_GSM_INIT0()
 
     PUT_2("S_GSM_INIT0 \r\n");
     clear_buf_uart3();
-    send_string_uart3(ATE0_CMD);		  //关闭回显
+    uart_string_send(ATE0_CMD);		  //关闭回显
     current_status = RST ;
 }
 static void S_RST()
@@ -127,17 +118,15 @@ static void S_RST()
         is_gprs_mode_start_succeed = 1;		 //GPRS模块和单片机的串口3已经通信上了
         clear_buf_uart3();
         current_status = SIMCARD ;
-        send_string_uart3(SIMCARD_CMD);
+        uart_string_send(SIMCARD_CMD);
 
     }
 	else
 	{
-        LCD_clear();
-        LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_START_FALSE)*6)/2,2,SIM_START_FALSE);
         delay_GSM(5000);
         clear_buf_uart3();
         current_status = RST ;
-        send_string_uart3(ATE0_CMD);
+        uart_string_send(ATE0_CMD);
     }
 }
 
@@ -149,18 +138,16 @@ static void S_SIMCARD_CMD()
     if(pp)
     {
         PUT_2("SIMCARD_CMD OK \r\n");
-		LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIMCARD_SUCCEED)*6)/2,2,SIMCARD_SUCCEED);
         clear_buf_uart3();
         current_status = CREG ;
-        send_string_uart3(CREG_CMD);
+        uart_string_send(CREG_CMD);
     }
 	else
 	{
-        PUT_2("SIMCARD_CMD ERR \r\n");
-		LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIMCARD_FALSE)*6)/2,2,SIMCARD_FALSE);
+        PUT_2("SIMCARD_CMD Gprs_err \r\n");
         clear_buf_uart3();
         current_status = SIMCARD ;
-        send_string_uart3(SIMCARD_CMD);
+        uart_string_send(SIMCARD_CMD);
     }
 }
 
@@ -175,14 +162,14 @@ static void S_CREG()
         current_status = INIT_FINISH_OK;
     }else{
         PUT_2(buf_uart3.buf);
-        PUT_2("S_REG ERR \r\n");
+        PUT_2("S_REG Gprs_err \r\n");
 
         debug_put_word(buf_uart3.buf[9]);
         debug_put_word(buf_uart3.buf[11]);
 
         clear_buf_uart3();
         current_status = CREG ;
-        send_string_uart3(CREG_CMD);
+        uart_string_send(CREG_CMD);
     }
 }
 
@@ -195,21 +182,18 @@ void init_gprs(void)
 
     while(1)
     {
-        err ++;
-        if(err>MAX_ERROR_COUNT)
+        Gprs_err ++;
+        if(Gprs_err>MAX_ERROR_COUNT)
         {
-            err = 0 ;
+            Gprs_err = 0 ;
             is_gprs_mode_ok = 0;
-            LCD_clear();
-            LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_REGISTER_FALSE)*6)/2,2,SIM_REGISTER_FALSE);
             delay_GSM(100000);
             break;
         }
 
         if(is_gprs_mode_start_succeed)
         {
-            LCD_clear();
-            LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_REGISTER)*6)/2,2,SIM_REGISTER);
+            ;
         }
 
         delay_GSM(1000);
@@ -251,7 +235,7 @@ static void S_START_OPEN_GPRS_S()               //开始GPRS 检测SIM卡先
 
     clear_buf_uart3();
     current_status = GPRS_DEF_PDP_S ;           //定义PDP移动场景
-    send_string_uart3(SIMCARD_CMD);
+    uart_string_send(SIMCARD_CMD);
 }
 
 
@@ -265,13 +249,13 @@ static void S_GPRS_DEF_PDP_S()                  //检测SIM卡 定义PDP
         PUT_2("SIMCARD_CMD OK \r\n");
         clear_buf_uart3();
         current_status = GPRS_ACT_PDP_S ;
-        send_string_uart3(GPRS_DEF_PDP);
+        uart_string_send(GPRS_DEF_PDP);
     }
     else
     {
         PUT_2("SIMCARD_CMD NO \r\n");
         clear_buf_uart3();
-        send_string_uart3(SIMCARD_CMD);
+        uart_string_send(SIMCARD_CMD);
     }
 }
 
@@ -282,14 +266,14 @@ static void S_GPRS_ACT_PDP_S()                  //判断定义PDP 激活PDP
         PUT_2("S_GPRS_DEF_PDP_S OK \r\n");
         clear_buf_uart3();
         current_status = GPRS_ACT_PDP_S_RET ;       // 发送激活
-        send_string_uart3(GPRS_ACT_PDP);
+        uart_string_send(GPRS_ACT_PDP);
     }
     else
     {
         PUT_2("S_GPRS_DEF_PDP_S NO \r\n");
 
         clear_buf_uart3();
-        send_string_uart3(GPRS_DEF_PDP);			//接入点
+        uart_string_send(GPRS_DEF_PDP);			//接入点
 
     }
 }
@@ -307,7 +291,7 @@ static void S_GPRS_ACT_PDP_S_RET()                  //判断激活
         PUT_2(buf_uart3.buf);
         PUT_2("S_GPRS_ACT_PDP_S_RET NO \r\n");
         clear_buf_uart3();
-		send_string_uart3(GPRS_ACT_PDP);
+		uart_string_send(GPRS_ACT_PDP);
     }
 }
 
@@ -321,16 +305,14 @@ void open_gprs_simple(void)
 
     while(1)
     {
-        err ++;
-        if(err>MAX_ERROR_COUNT)
+        Gprs_err ++;
+        if(Gprs_err>MAX_ERROR_COUNT)
         {
-            err = 0 ;
-            LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_GPRS_FALSE)*6)/2,2,SIM_GPRS_FALSE);
+            Gprs_err = 0 ;
             delay_GSM(100000);
             break;
         }
 
-        LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_GPRS)*6)/2,2,SIM_GPRS);
         delay_GSM(1000);
 
 
@@ -372,7 +354,7 @@ static void S_TCPIP_BJ_ADDR()
 {
     clear_buf_uart3();
     current_status = TCPIP_CONNECT ;
-    send_string_uart3(GPRS_BJ_ADDR);		  //获取本地IP地址
+    uart_string_send(GPRS_BJ_ADDR);		  //获取本地IP地址
     PUT_2("S_TCPIP_BJ_ADDR\r\n");
 }
 
@@ -434,12 +416,11 @@ void creat_tcp()
 
     while(1)
     {
-        err ++;
+        Gprs_err ++;
 
-        if(err>MAX_ERROR_COUNT)
+        if(Gprs_err>MAX_ERROR_COUNT)
         {
-            err = 0 ;
-            LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_TCPIP_FALSE)*6)/2,2,SIM_TCPIP_FALSE);
+            Gprs_err = 0 ;
             break;
         }
 
@@ -484,21 +465,19 @@ void send_gprs_data(char * buf , unsigned int count)
         return ;
 
 	ibusy = 1;
-    LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(LCD_BANK_LINE)*6)/2,5,LCD_BANK_LINE);
-    LCD_write_english_string((LCD_WIDTH_PIXELS - strlen(SIM_SEND_GPRS_DATA_TEST)*6)/2,5,SIM_SEND_GPRS_DATA_TEST);
 #if 1
-    send_string_uart3(GPRS_SEND_DATA);		  //发送数据命令 注意没长度限制
+    uart_string_send(GPRS_SEND_DATA);		  //发送数据命令 注意没长度限制
     delay_GSM(2000);
 
     for( j = 0 ;j < count ; j ++)
     {
         for ( i = 0 ; i < strlen((const char*)buf) ; i ++)
         {
-            send_data_uart3(buf[i]);
+            uart_data_send(buf[i]);
         }
     }
 
-    send_data_uart3(0x1A);  //LF			  //没长度限制一定要用1A表示结束
+    uart_data_send(0x1A);  //LF			  //没长度限制一定要用1A表示结束
 #endif
 	ibusy = 0;
 }
@@ -537,7 +516,7 @@ static void S_GSM_MSG_MODE_S()
     PUT("S_GSM_MSG_MODE_S OK \r\n");
     clear_buf_uart3();
     current_status = GSM_MSG_MODE_S ;           //定义PDP移动场景
-    send_string_uart3(GSM_MSG_MODE);
+    uart_string_send(GSM_MSG_MODE);
 
 }
 
@@ -548,13 +527,13 @@ static void S_GSM_CHAR_MODE_S()
         PUT("S_GSM_CHAR_MODE_S OK \r\n");
         clear_buf_uart3();
         current_status = GSM_CHAR_MODE_S;
-        send_string_uart3(GSM_CHAR_MODE);
+        uart_string_send(GSM_CHAR_MODE);
     }
     else
     {
         PUT("S_GSM_CHAR_MODE_S NO \r\n");
         clear_buf_uart3();
-        send_string_uart3(GSM_MSG_MODE);
+        uart_string_send(GSM_MSG_MODE);
     }
 }
 
@@ -570,7 +549,7 @@ static void S_GSM_CHAR_MODE_RET_S()
     {
         PUT("S_GSM_CHAR_MODE_RET_S NO \r\n");
         clear_buf_uart3();
-        send_string_uart3(GSM_CHAR_MODE);
+        uart_string_send(GSM_CHAR_MODE);
     }
 }
 
@@ -581,10 +560,10 @@ static void init_sms_to_send()
 
     while(1)
     {
-        err ++;
-        if(err>MAX_ERROR_COUNT)
+        Gprs_err ++;
+        if(Gprs_err>MAX_ERROR_COUNT)
         {
-            err = 0 ;
+            Gprs_err = 0 ;
             break;
         }
         delay_GSM(1000);
@@ -631,19 +610,19 @@ void send_gsm_text(unsigned char * buf , unsigned int count)
     PUT("-END\r\n");
 
     if(strlen(tpy_send_tel_num) != 11)
-        send_string_uart3(GSM_SEND_TEXT);
+        uart_string_send(GSM_SEND_TEXT);
     else
     {
         sprintf(send_sms_cmd_num,"AT+CMGS=\"+86%s\"\x00D\x00A",tpy_send_tel_num);
         PUT(send_sms_cmd_num);
-        send_string_uart3(send_sms_cmd_num);
+        uart_string_send(send_sms_cmd_num);
     }
     delay_GSM(100);
     for( i = 0 ;i < count ; i ++)
     {
         for ( i = 0 ; i < strlen((const char*)buf) ; i ++)
         {
-            send_data_uart3(buf[i]);
+            uart_data_send(buf[i]);
         }
     }
 
