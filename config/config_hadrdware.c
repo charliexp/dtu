@@ -28,7 +28,6 @@
   */
 #include "config_hardware.h"
 
-
 USART_InitTypeDef USART_InitStructure = {
 		9600,
 		USART_WordLength_8b,
@@ -48,5 +47,7 @@ USART_InitTypeDef Conf_GprsUsart = {
 	
 };
 
-ConfGprs g_config_data ;
+
+
+
 

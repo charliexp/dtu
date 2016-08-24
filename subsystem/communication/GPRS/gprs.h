@@ -3,10 +3,10 @@
 
 //默认设置数据				  
 #define SERNUM "0000001"
-#define PROTOTOCOL "UDP"
-#define IPADDR "lei-gong.vicp.cc"
-#define PORTNUM "1001"
-#define TELNUM "15922041115"
+#define PROTOTOCOL "TCP"
+#define IPADDR "chitic.zicp.net"
+#define PORTNUM "17353"
+#define TELNUM "15858172663"
 #define CACHESIZE 512
 
 #define GPRS_SIMPLE 1

@@ -5,6 +5,8 @@
 #define osObjectsPublic                     // define objects in main module
 #include "osObjects.h"                      // RTOS object definitions
 #include "config_hardware.h"
+#include "config_software.h"
+
 #include "chipset.h"
 #include "pinmux.h"
 #include "stm32_eval.h"
@@ -29,10 +31,10 @@ PUTCHAR_PROTOTYPE
 {
     /* Place your implementation of fputc here */
     /* e.g. write a character to the USART */
-    USART_SendData(USART1, (uint8_t) ch);
+    USART_SendData( DEBUG_USART, (uint8_t) ch);
 
     /* Loop until the end of transmission */
-    while (USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET)
+    while (USART_GetFlagStatus( DEBUG_USART, USART_FLAG_TC) == RESET)
     {
     }
 
@@ -56,6 +58,8 @@ int main (void) {
 	STM_EVAL_COMInit(COM1, &USART_InitStructure);
 	printf("[main] DTU project start...\r\n");
 	USART_Configuration();
+	
+	set_default_config_data();
 	
   // create 'thread' functions that start executing,
   // example: tid_name = osThreadCreate (osThread(name), NULL);

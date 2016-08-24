@@ -13,13 +13,13 @@ void Delay(unsigned long  nCount)
 
 void delay_GSM(unsigned int i)          //ÑÓÊ±º¯Êý
 {
-//    unsigned int i_delay,j_delay;
-//    for(i_delay=0;i_delay<i;i_delay++)
-//    {for(j_delay=0;j_delay<3000;j_delay++)
-//        {;}}
-			int delay_ms = i / 5;
-			if (delay_ms == 0)	delay_ms = 1;
-			osDelay(delay_ms);
+    unsigned int i_delay,j_delay;
+    for(i_delay=0;i_delay<i;i_delay++)
+    {for(j_delay=0;j_delay<3000;j_delay++)
+        {;}}
+//			int delay_ms = i / 5;
+//			if (delay_ms == 0)	delay_ms = 1;
+//			osDelay(delay_ms);
 }
 
 void delay_xms(unsigned int i)

@@ -47,7 +47,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>STM32SIM800A.hex</OutputName>
+          <OutputName>dtu</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>USE_STDPERIPH_DRIVER, STM32F10X_MD, USE_STM3210B_EVAL,HSE_VALUE=12000000</Define>
               <Undefine></Undefine>
-              <IncludePath>.\config;.\lw_oopc_v1.2;.\include;.\subsystem\communication\GPRS;.\board</IncludePath>
+              <IncludePath>.\config;.\lw_oopc_v1.2;.\include;.\subsystem\communication\GPRS;.\board;.\subsystem\communication;.\DataStruct</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -473,6 +473,16 @@
               <FileType>1</FileType>
               <FilePath>.\config\config_hadrdware.c</FilePath>
             </File>
+            <File>
+              <FileName>config_software.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\config\config_software.h</FilePath>
+            </File>
+            <File>
+              <FileName>config_software.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\config\config_software.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -532,6 +542,31 @@
               <FileName>times.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\board\times.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>dataStruct</GroupName>
+          <Files>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DataStruct\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DataStruct\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\DataStruct\queue.h</FilePath>
+            </File>
+            <File>
+              <FileName>list.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\DataStruct\list.h</FilePath>
             </File>
           </Files>
         </Group>

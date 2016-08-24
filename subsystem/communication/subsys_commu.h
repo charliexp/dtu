@@ -10,8 +10,7 @@ CLASS(SubS_comm)
 	err_t (*init)(void *);
 	err_t (*destory)(void *);
 	
-	//tcp 操作
-	gprs_tcp_operate *tcp_opr;
+
 	
 	// todo:	后续添加短信操作
 	

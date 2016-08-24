@@ -6,6 +6,8 @@
 #include "gprs.h"
 #include "gprs_uart.h"
 #include "config_hardware.h"
+#include "config_software.h"
+
 #include "times.h"
 
 int num_of_sms;
